@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "a397b2bb-b1bf-4388-89a4-cfadc4e145e5",
+		"name": "FHIR Proxy Old",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Resources",
+			"item": [
+				{
+					"name": "GET Patients Proxy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{proxyFunctionUrl}}/fhir/Patient",
+							"protocol": "https",
+							"host": [
+								"{{proxyFunctionUrl}}"
+							],
+							"path": [
+								"fhir",
+								"Patient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Patient Proxy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resourceType\": \"Patient\",\n    \"extension\": [\n        {\n            \"url\": \"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\",\n            \"valueCodeableConcept\": {\n                \"coding\": [\n                    {\n                        \"system\": \"http://hl7.org/fhir/v3/Race\",\n                        \"code\": \"2106-3\",\n                        \"display\": \"White\"\n                    }\n                ],\n                \"text\": \"race\"\n            }\n        },\n        {\n            \"url\": \"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\",\n            \"valueCodeableConcept\": {\n                \"coding\": [\n                    {\n                        \"system\": \"http://hl7.org/fhir/v3/Ethnicity\",\n                        \"code\": \"2186-5\",\n                        \"display\": \"Nonhispanic\"\n                    }\n                ],\n                \"text\": \"ethnicity\"\n            }\n        },\n        {\n            \"url\": \"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\n            \"valueCode\": \"M\"\n        }\n    ],\n    \"identifier\": [\n        {\n            \"system\": \"http://va.gov/fhir/NamingSystem/identifier\",\n            \"value\": \"VA-104\"\n        },\n        {\n            \"system\": \"http://fhirbot.org\",\n            \"value\": \"555121\"\n        }\n    ],\n    \"name\": [\n        {\n            \"use\": \"official\",\n            \"text\": \"Bob Standhope\",\n            \"family\": \"Standhope\",\n            \"given\": [\n                \"Bob\"\n            ]\n        }\n    ],\n    \"telecom\": [\n        {\n            \"system\": \"phone\",\n            \"value\": \"615-871-6779\",\n            \"use\": \"mobile\"\n        },\n        {\n            \"system\": \"email\",\n            \"value\": \"bobstandhope@woohoo.com\"\n        }\n    ],\n    \"gender\": \"male\",\n    \"birthDate\": \"1989-06-13\",\n    \"address\": [\n        {\n            \"use\": \"home\",\n            \"line\": [\n                \"2804 Opryland Dr\"\n            ],\n            \"city\": \"Nashville\",\n            \"state\": \"TN\",\n            \"postalCode\": \"37214\",\n            \"country\": \"USA\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{proxyFunctionUrl}}/fhir/Patient",
+							"protocol": "https",
+							"host": [
+								"{{proxyFunctionUrl}}"
+							],
+							"path": [
+								"fhir",
+								"Patient"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{proxyToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Proxy Token Client Credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"proxyToken\", jsonData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{publicClientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{publicClientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "resource",
+							"value": "{{functionClientId}}",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "https://fhir-with-proxy-dc9d5-func.azurewebsites.net/.default",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{tenantId}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "resource",
+				"value": {
+					"a613f4ef-385f-498c-bc8f-3d5ff229e562": "{{functionClientId}}"
+				},
+				"type": "any"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://login.microsoftonline.com/{{tenantId}}/oauth2/authorize",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{publicClientSecret}}",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{publicClientId}}",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "tokenName",
+				"value": "proxyToken",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "state",
+				"value": "1234",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://www.getpostman.com/oauth2/callback",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

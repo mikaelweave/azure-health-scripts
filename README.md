@@ -1,2 +1,5 @@
-# azure-health-scripts
-Scripts and resources to accomplish common scenarios with Azure Health Data Services
+# Azure Health Scripts
+
+This is a repository of common scripts and patterns I use in my work with Azure Health solutions. 
+
+**Disclaimer:** I currently work for Microsoft but these scripts are my own personal tools. They are not supported, condoned, or approved by my employer.
