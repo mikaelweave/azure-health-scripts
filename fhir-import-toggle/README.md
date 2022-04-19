@@ -4,7 +4,7 @@ This template will allow you to toggle the `[$import operation](https://docs.mic
 
 ## Deployment via portal
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fquickstarts%2Fmicrosoft.storage%2Fstorage-account-create%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmikaelweave%2Fazure-health-scripts%2Fmain%2Ffhir-import-toggle%2Ftoggle_import.json)
 
 ## Deployment via azure cli
 
