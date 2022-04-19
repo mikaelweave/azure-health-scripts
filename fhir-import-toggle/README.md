@@ -19,5 +19,6 @@ az deployment group create \
     --parameters fhirName="fhir-service-name" \
     --parameters storageName="storage-account-name" \
     --parameters containerName="blob-container-name" \
-    --parameters toggleImport=true
+    --parameters enableImport=true \
+    --output table
 ```

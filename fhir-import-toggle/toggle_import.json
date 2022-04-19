@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "10878524857478088189"
+      "templateHash": "18099431896220867361"
     }
   },
   "parameters": {
@@ -51,7 +51,7 @@
         "description": "Name of storage container to use for import. Needs to be an existing container. This deployment will add necessary permissions."
       }
     },
-    "toggleImport": {
+    "enableImport": {
       "type": "bool",
       "metadata": {
         "description": "Flag to enable or disable $import"
@@ -79,7 +79,7 @@
       "identity": {
         "type": "SystemAssigned"
       },
-      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', if(parameters('toggleImport'), variables('enableConfiguration'), variables('disableConfiguration'))))]",
+      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', if(parameters('enableImport'), variables('enableConfiguration'), variables('disableConfiguration'))))]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', parameters('fhirName'))]"
       ],

@@ -25,7 +25,7 @@ param storageName string
 param containerName string
 
 @description('Flag to enable or disable $import')
-param toggleImport bool
+param enableImport bool
 
 @description('Used to pull existing configuration from FHIR serviceß')
 module existingFhir './existing_fhir.bicep' = {
@@ -59,7 +59,7 @@ var disableConfiguration = {
 
 @description('Merge the new importConfiguration with existing properties')
 var newProperties = union(existingFhirProperties, {
-  importConfiguration: toggleImport ? enableConfiguration : disableConfiguration
+  importConfiguration: enableImport ? enableConfiguration : disableConfiguration
 })
 
 @description('Updated FHIR Service used to enable import')
