@@ -45,11 +45,7 @@ resource existingWorkspace 'Microsoft.HealthcareApis/workspaces@2021-11-01' exis
 var existingFhirProperties = existingFhir.outputs.properties
 
 @description('If storage name is blank, leave the existing storage configuration')
-var enableConfiguration = storageName == '' ? {
-  enabled: true
-  initialImportMode: true
-  integrationDataStore: existingFhirProperties.importConfiguration.integrationDataStore
-} : {
+var enableConfiguration = {
   enabled: true
   initialImportMode: true
   integrationDataStore: storageName

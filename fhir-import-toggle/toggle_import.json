@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "10119560890925170938"
+      "templateHash": "11978475889493476976"
     }
   },
   "parameters": {
@@ -58,6 +58,13 @@
       }
     }
   },
+  "variables": {
+    "enableConfiguration": {
+      "enabled": true,
+      "initialImportMode": true,
+      "integrationDataStore": "[parameters('storageName')]"
+    }
+  },
   "resources": [
     {
       "type": "Microsoft.HealthcareApis/workspaces/fhirservices",
@@ -68,7 +75,7 @@
       "identity": {
         "type": "SystemAssigned"
       },
-      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, if(parameters('toggleImport'), if(equals(parameters('storageName'), ''), createObject('enabled', true(), 'initialImportMode', true(), 'integrationDataStore', reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration.integrationDataStore), createObject('enabled', true(), 'initialImportMode', true(), 'integrationDataStore', parameters('storageName'))), if(contains(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, 'importConfiguration'), union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, createObject('enabled', false(), 'initialImportMode', false())), createObject('enabled', false(), 'initialImportMode', false()))))))]",
+      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, if(parameters('toggleImport'), variables('enableConfiguration'), if(contains(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, 'importConfiguration'), union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, createObject('enabled', false(), 'initialImportMode', false())), createObject('enabled', false(), 'initialImportMode', false()))))))]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', parameters('fhirName'))]"
       ],
