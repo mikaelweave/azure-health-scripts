@@ -52,17 +52,14 @@ var enableConfiguration = {
 }
 
 @description('Leave existing integrationDataStore property')
-var disableConfiguration = contains(existingFhirProperties, 'importConfiguration') ? union(existingFhirProperties.importConfiguration, {
-  enabled: false
-  initialImportMode: false
-}) : {
+var disableConfiguration = {
   enabled: false
   initialImportMode: false
 }
 
-var importConfiguration = union(existingFhirProperties.importConfiguration, toggleImport ? enableConfiguration : disableConfiguration)
+@description('Merge the new importConfiguration with existing properties')
 var newProperties = union(existingFhirProperties, {
-  importConfiguration: importConfiguration
+  importConfiguration: toggleImport ? enableConfiguration : disableConfiguration
 })
 
 @description('Updated FHIR Service used to enable import')

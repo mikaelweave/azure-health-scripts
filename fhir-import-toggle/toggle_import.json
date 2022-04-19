@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "11978475889493476976"
+      "templateHash": "10878524857478088189"
     }
   },
   "parameters": {
@@ -63,6 +63,10 @@
       "enabled": true,
       "initialImportMode": true,
       "integrationDataStore": "[parameters('storageName')]"
+    },
+    "disableConfiguration": {
+      "enabled": false,
+      "initialImportMode": false
     }
   },
   "resources": [
@@ -75,7 +79,7 @@
       "identity": {
         "type": "SystemAssigned"
       },
-      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, if(parameters('toggleImport'), variables('enableConfiguration'), if(contains(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, 'importConfiguration'), union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value.importConfiguration, createObject('enabled', false(), 'initialImportMode', false())), createObject('enabled', false(), 'initialImportMode', false()))))))]",
+      "properties": "[union(reference(resourceId('Microsoft.Resources/deployments', parameters('fhirName'))).outputs.properties.value, createObject('importConfiguration', if(parameters('toggleImport'), variables('enableConfiguration'), variables('disableConfiguration'))))]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', parameters('fhirName'))]"
       ],
