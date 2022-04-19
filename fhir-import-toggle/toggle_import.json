@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "18099431896220867361"
+      "templateHash": "13982464533427833543"
     }
   },
   "parameters": {
@@ -41,14 +41,9 @@
     },
     "storageName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Name of storage account to use for import. Needs to be an existing storage account."
-      }
-    },
-    "containerName": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of storage container to use for import. Needs to be an existing container. This deployment will add necessary permissions."
+        "description": "Name of storage account to use for import. Needs to be an existing storage account. Leave blank if this has already been configured."
       }
     },
     "enableImport": {
@@ -72,7 +67,7 @@
   "resources": [
     {
       "type": "Microsoft.HealthcareApis/workspaces/fhirservices",
-      "apiVersion": "2021-11-01",
+      "apiVersion": "2022-01-31-preview",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('fhirName'))]",
       "location": "[parameters('resourceLocation')]",
       "kind": "[parameters('fhirKind')]",
@@ -85,22 +80,6 @@
       ],
       "metadata": {
         "description": "Updated FHIR Service used to enable import"
-      }
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2020-04-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[0], split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[1], split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[2])]",
-      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[0], split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[1], split(format('{0}/default/{1}', parameters('storageName'), parameters('containerName')), '/')[2]), resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'))]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-        "principalId": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01', 'full').identity.principalId]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName'))]"
-      ],
-      "metadata": {
-        "description": "This is the role assignment to give access to the Postman Client to the FHIR Service"
       }
     },
     {
@@ -177,5 +156,14 @@
         "description": "Used to pull existing configuration from FHIR serviceß"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "storageAccountName": {
+      "type": "string",
+      "value": "[if(parameters('enableImport'), parameters('storageName'), '')]",
+      "metadata": {
+        "description": "Used to validate that the storage account exists"
+      }
+    }
+  }
 }

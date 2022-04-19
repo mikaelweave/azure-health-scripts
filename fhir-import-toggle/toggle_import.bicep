@@ -18,11 +18,8 @@ param fhirName string
 ])
 param fhirKind string = 'fhir-R4'
 
-@description('Name of storage account to use for import. Needs to be an existing storage account.')
-param storageName string
-
-@description('Name of storage container to use for import. Needs to be an existing container. This deployment will add necessary permissions.')
-param containerName string
+@description('Name of storage account to use for import. Needs to be an existing storage account. Leave blank if this has already been configured.')
+param storageName string = ''
 
 @description('Flag to enable or disable $import')
 param enableImport bool
@@ -51,7 +48,6 @@ var enableConfiguration = {
   integrationDataStore: storageName
 }
 
-@description('Leave existing integrationDataStore property')
 var disableConfiguration = {
   enabled: false
   initialImportMode: false
@@ -63,7 +59,7 @@ var newProperties = union(existingFhirProperties, {
 })
 
 @description('Updated FHIR Service used to enable import')
-resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2021-11-01' = {
+resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-01-31-preview' = {
   name: fhirName
   parent: existingWorkspace
   location: resourceLocation
@@ -80,23 +76,10 @@ resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2021-11-01' = {
   ]
 }
 
-@description('Blob container used by FHIR service for $import')
-resource importContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' existing = {
-  name: '${storageName}/default/${containerName}'
+@description('Storage account used by FHIR service for $import')
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing  = if (enableImport) {
+  name: storageName
 }
 
-@description('This is the built-in Storage Blob Data Contributor role. See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-contributor')
-resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-  scope: subscription()
-  name: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-}
-
-@description('This is the role assignment to give access to the Postman Client to the FHIR Service')
-resource fhirDataContributorAccess 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  scope: importContainer
-  name: guid(importContainer.id, fhir.id, fhirContributorRoleDefinition.id)
-  properties: {
-    roleDefinitionId: fhirContributorRoleDefinition.id
-    principalId: fhir.identity.principalId
-  }
-}
+@description('Used to validate that the storage account exists')
+output storageAccountName string = enableImport ? storageAccount.name : ''
