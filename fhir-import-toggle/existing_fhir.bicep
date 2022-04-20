@@ -10,7 +10,7 @@ resource existingWorkspace 'Microsoft.HealthcareApis/workspaces@2021-11-01' exis
 }
 
 @description('This is the existing FHIR Service used to populate the updated resource')
-resource existingFhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2021-11-01' existing = {
+resource existingFhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-01-31-preview' existing = {
   name: fhirName
   parent: existingWorkspace
 }
