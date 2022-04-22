@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "13982464533427833543"
+      "templateHash": "4192486384743207684"
     }
   },
   "parameters": {
@@ -106,7 +106,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "6831034718262502944"
+              "templateHash": "7405174855623910646"
             }
           },
           "parameters": {
@@ -128,26 +128,6 @@
             "properties": {
               "type": "object",
               "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01')]"
-            },
-            "acrConfiguration": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01').acrConfiguration]"
-            },
-            "accessPolicies": {
-              "type": "array",
-              "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01').accessPolicies]"
-            },
-            "authenticationConfiguration": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01').authenticationConfiguration]"
-            },
-            "corsConfiguration": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01').corsConfiguration]"
-            },
-            "exportConfiguration": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('fhirName')), '2021-11-01').exportConfiguration]"
             }
           }
         }
@@ -162,7 +142,7 @@
       "type": "string",
       "value": "[if(parameters('enableImport'), parameters('storageName'), '')]",
       "metadata": {
-        "description": "Used to validate that the storage account exists"
+        "description": "Used to validate that the storage account exists when enabling import"
       }
     }
   }

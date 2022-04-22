@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
 // -- parameter definition
 @description('Region of the FHIR service')
 param resourceLocation string = resourceGroup().location
@@ -24,6 +21,7 @@ param storageName string = ''
 @description('Flag to enable or disable $import')
 param enableImport bool
 
+// -- Module is required to get existing information from FHIR service
 @description('Used to pull existing configuration from FHIR serviceß')
 module existingFhir './existing_fhir.bicep' = {
   name: fhirName
@@ -76,10 +74,10 @@ resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-01-31-previ
   ]
 }
 
-@description('Storage account used by FHIR service for $import')
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing  = if (enableImport) {
+@description('Existing storage account used by FHIR service for $import')
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing  = if (enableImport) {
   name: storageName
 }
 
-@description('Used to validate that the storage account exists')
-output storageAccountName string = enableImport ? storageAccount.name : ''
+@description('Used to validate that the storage account exists when enabling import')
+output storageAccountName string = enableImport ? existingStorageAccount.name : ''
