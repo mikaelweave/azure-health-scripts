@@ -5,6 +5,7 @@ param tenantId string
 param keyAdminPrincipals array = []
 param location string = resourceGroup().location
 param sku string = 'Standard'
+@secure()
 param defaultSecrets object = {}
 param appTags object = {}
 
