@@ -3,8 +3,11 @@ param prefix string
 param tenantId string = subscription().tenantId
 param location string = resourceGroup().location
 param adminPrincipalIds array = []
+@secure()
 param privateServicePrincipal object
+@secure()
 param publicServicePrincipal object
+@secure()
 param functionServicePrincipal object
 
 // Resource names
