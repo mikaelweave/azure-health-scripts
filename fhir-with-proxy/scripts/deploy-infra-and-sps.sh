@@ -28,7 +28,7 @@ then
   exit 1
 fi
 
-source "${REPO_DIR}/scripts/aad-helpers.sh"
+source "${REPO_DIR}/../common/scripts/aad-helpers.sh"
 
 # Create resource group if needed
 echo "Creating resource group if needed..."
@@ -56,6 +56,9 @@ if [ -z ${FUNCTION_SP+x} ]; then
 
   addReplyUrl "$FUNCTION_SP" "https://${FUNCTION_APP_NAME}.azurewebsites.net/.auth/login/aad/callback"
   createAppRolesFromWebJson "$FUNCTION_SP" 'https://raw.githubusercontent.com/microsoft/fhir-proxy/main/scripts/fhirroles.json'
+
+  addDefaultIdentifierUri "$FUNCTION_SP" 
+
   echo "FUNCTION_SP=$(echo $FUNCTION_SP | tr -d ' ')" >> "${REPO_DIR}/.env"
 fi
 

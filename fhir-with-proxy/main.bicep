@@ -40,7 +40,7 @@ module fhir './fhir.bicep' = {
   dependsOn: [
     keyvault
     function
-  ]
+  ]x
 }
 
 module function './function.bicep' = {

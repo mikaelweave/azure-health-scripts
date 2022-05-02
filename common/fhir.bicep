@@ -4,14 +4,15 @@ param appTags object = {}
 
 param tenantId string
 param location string
-param fhirContributorObjectIds array = []
+param fhirContributorSpObjectIds array = []
+param fhirContributorUserObjectIds array = []
 
 var fhirservicename = '${workspaceName}/${fhirName}'
 var loginURL = environment().authentication.loginEndpoint
 var authority = '${loginURL}${tenantId}'
 var audience = 'https://${workspaceName}-${fhirName}.fhir.azurehealthcareapis.com'
 
-resource   'Microsoft.HealthcareApis/workspaces@2021-06-01-preview' = {
+resource healthWorkspace 'Microsoft.HealthcareApis/workspaces@2021-06-01-preview' = {
   name: workspaceName
   location: location
   tags: appTags
@@ -49,12 +50,22 @@ resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@
   name: '5a1fc7df-4bf1-4951-a576-89034ee01acd'
 }
 
-resource fhirDataContributorAccess 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorObjectIds: {
+resource fhirDataContributorAccessSp 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorSpObjectIds: {
   scope: fhir
   name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
   properties: {
     roleDefinitionId: fhirContributorRoleDefinition.id
     principalId: principalId
     principalType: 'ServicePrincipal'
+  }
+}]
+
+resource fhirDataContributorAccessUser 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorUserObjectIds: {
+  scope: fhir
+  name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
+  properties: {
+    roleDefinitionId: fhirContributorRoleDefinition.id
+    principalId: principalId
+    principalType: 'User'
   }
 }]

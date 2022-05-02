@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Find the path on the system of the script and repo
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-REPO_DIR="${SCRIPT_DIR}/.."
-
 # Creates service principal and sets variables to informatino aboiut service principal
 # $1 name of the service principal to create
 function createServicePrincipal()
@@ -95,4 +91,11 @@ function grantAppPermission()
   az rest --method patch --uri "https://graph.microsoft.com/beta/applications/${SP_OBJECT_ID}" \
       --headers '{"Content-Type":"application/json"}' \
       --body '{"api":{"preAuthorizedApplications":[{"appId":"'"$GIVEN_SP_APP_ID"'","permissionIds":["'"$PERMISSION_ID"'"]}]}}'
+}
+
+# Sets the default identifier uri in the "api://guid format"
+function addDefaultIdentifierUri()
+{
+    APP_ID=`echo $1 | jq -r '.appId'`
+    az ad app update --id "$APP_ID" "api://${APP_ID}"
 }
