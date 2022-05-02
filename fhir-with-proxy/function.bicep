@@ -7,6 +7,7 @@ param location string
 param keyVaultName string
 param tenantId string
 param appTags object = {}
+@secure()
 param functionServicePrincipal object
 param fhirProxyPreProcess string = 'FHIRProxy.preprocessors.TransformBundlePreProcess'
 param fhirProxyPostProcess string = ''
