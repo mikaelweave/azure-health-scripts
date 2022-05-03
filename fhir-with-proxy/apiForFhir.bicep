@@ -1,4 +1,3 @@
-param workspaceName string
 param fhirName string
 param appTags object = {}
 
@@ -6,42 +5,30 @@ param tenantId string
 param location string
 param fhirContributorServicePrincipalObjectIds array = []
 
-var fhirservicename = '${workspaceName}/${fhirName}'
 var loginURL = environment().authentication.loginEndpoint
 var authority = '${loginURL}${tenantId}'
-var audience = 'https://${workspaceName}-${fhirName}.fhir.azurehealthcareapis.com'
+var audience = 'https://${fhirName}.azurehealthcareapis.com'
 
-resource healthWorkspace 'Microsoft.HealthcareApis/workspaces@2021-06-01-preview' = {
-  name: workspaceName
-  location: location
+
+resource apiForFhir 'Microsoft.HealthcareApis/services@2021-06-01-preview' ={
+  name: fhirName
   tags: appTags
-}
-
-resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2021-06-01-preview' = {
-  name: fhirservicename
-  location: location
   kind: 'fhir-R4'
-
+  location: location
   identity: {
     type: 'SystemAssigned'
   }
-
-
-  properties: {
+  properties:{
     authenticationConfiguration: {
-      authority: authority
       audience: audience
+      authority: authority
       smartProxyEnabled: false
     }
+    cosmosDbConfiguration:{
+        offerThroughput: 400
+    }
   }
-
-  tags: appTags
-
-  dependsOn: [
-    healthWorkspace
-  ]
 }
-
 
 @description('This is the built-in FHIR Data Contributor role. See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#fhir-data-contributor')
 resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
@@ -50,8 +37,8 @@ resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@
 }
 
 resource fhirDataContributorAccess 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorServicePrincipalObjectIds: {
-  scope: fhir
-  name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
+  scope: apiForFhir
+  name: guid(apiForFhir.id, principalId, fhirContributorRoleDefinition.id)
   properties: {
     roleDefinitionId: fhirContributorRoleDefinition.id
     principalId: principalId

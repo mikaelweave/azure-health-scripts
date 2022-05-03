@@ -6,7 +6,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_DIR="${SCRIPT_DIR}/.."
 
 # Load from .env file from repo root
-unset RESOURCE_GROUP; unset LOCATION; unset PRIVATE_SP; unset PUBLIC_SP; unset FUNCTION_SP;
+unset RESOURCE_GROUP; unset LOCATION; unset PRIVATE_SP; unset PUBLIC_SP; unset FUNCTION_SP; unset PREFIX;
 if [ -f "${REPO_DIR}/.env" ]
 then
   set -a
@@ -22,7 +22,9 @@ then
 fi
 
 # Check Prefix Length
-if [[ ${#PREFIX} > 15 ]]
+echo $PREFIX
+echo ${#PREFIX}
+if [[ ${#PREFIX} -gt 15 ]]
 then
   echo -e "\033[0;31m Prefix must be 15 characters or less.\033[0m\n"
   exit 1
@@ -103,4 +105,5 @@ az deployment group create \
     --parameters privateServicePrincipal="$PRIVATE_SP" \
     --parameters publicServicePrincipal="$PUBLIC_SP" \
     --parameters functionServicePrincipal="$FUNCTION_SP" \
+    --parameters fhirType="$FHIR_TYPE" \
     --output table

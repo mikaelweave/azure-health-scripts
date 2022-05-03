@@ -97,5 +97,5 @@ function grantAppPermission()
 function addDefaultIdentifierUri()
 {
     APP_ID=`echo $1 | jq -r '.appId'`
-    az ad app update --id "$APP_ID" "api://${APP_ID}"
+    az ad app update --id "$APP_ID" --identifier-uris "api://${APP_ID}"
 }
