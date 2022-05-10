@@ -70,7 +70,8 @@ if [ -z ${PUBLIC_SP+x} ]; then
   PUBLIC_SP=`createServicePrincipal "$PREFIX-public-client-${GROUP_UNIQUE_STR}"`
 
   # Give AAD a sec to breathe
-  sleep 30
+  echo "Pausing to let AAD changes save..."
+  sleep 30s
 
   grantAppPermission "$FUNCTION_SP" "$PUBLIC_SP" "user_impersonation"
   addReplyUrl "$PUBLIC_SP" "https://oauth.pstmn.io/v1/callback"

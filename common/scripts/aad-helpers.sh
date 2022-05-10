@@ -22,7 +22,7 @@ function createAppRolesFromWebJson()
     SP_APP_ID=`echo $1 | jq -r '.appId'`
 
     mkdir -p "${REPO_DIR}/tmp" >/dev/null 2>&1
-    curl -L -Z "$2" --output "${REPO_DIR}/tmp/fhirroles.json"
+    curl -L "$2" --output "${REPO_DIR}/tmp/fhirroles.json"
     az ad app update --id $SP_APP_ID --app-roles @"${REPO_DIR}/tmp/fhirroles.json"
 }
 
