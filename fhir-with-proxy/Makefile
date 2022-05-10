@@ -24,17 +24,17 @@ deploy: deploy-infra deploy-func gen-postman-env
 ## Create only the azure resources
 .PHONY: deploy-infra
 deploy-infra:
-	bash ./scripts/deploy-infra-and-sps.sh
+	./scripts/deploy-infra-and-sps.sh
 
 ## Deploy only the Function App. Depends on `deploy-infra` being run first.
 .PHONY: deploy-func
 deploy-func:
-	bash ./scripts/deploy-proxy-func.sh
+	./scripts/deploy-proxy-func.sh
 	
 ## Generates a Postman environment for use in testing proxy
 .PHONY: gen-postman-env
 gen-postman-env:
-	bash ./scripts/gen-postman-env.sh
+	./scripts/gen-postman-env.sh
 
 ## Remove the resource group and resources
 .PHONY: destroy

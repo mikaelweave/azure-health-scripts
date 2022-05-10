@@ -22,8 +22,6 @@ then
 fi
 
 # Check Prefix Length
-echo $PREFIX
-echo ${#PREFIX}
 if [[ ${#PREFIX} -gt 15 ]]
 then
   echo -e "\033[0;31m Prefix must be 15 characters or less.\033[0m\n"
@@ -34,7 +32,9 @@ source "${REPO_DIR}/../common/scripts/aad-helpers.sh"
 
 # Create resource group if needed
 echo "Creating resource group if needed..."
-az group create --name $RESOURCE_GROUP --location $LOCATION --output table
+if [ $(az group exists --name $RESOURCE_GROUP) = false ]; then
+    az group create --name $RESOURCE_GROUP --location $LOCATION --output table
+fi
 
 GROUP_UNIQUE_STR=`az group show --name $RESOURCE_GROUP --query id --output tsv | md5sum | cut -c1-5`
 
@@ -70,7 +70,7 @@ if [ -z ${PUBLIC_SP+x} ]; then
   PUBLIC_SP=`createServicePrincipal "$PREFIX-public-client-${GROUP_UNIQUE_STR}"`
 
   # Give AAD a sec to breathe
-  sleep 10
+  sleep 30
 
   grantAppPermission "$FUNCTION_SP" "$PUBLIC_SP" "user_impersonation"
   addReplyUrl "$PUBLIC_SP" "https://oauth.pstmn.io/v1/callback"
