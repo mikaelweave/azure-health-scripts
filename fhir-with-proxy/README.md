@@ -1,6 +1,6 @@
 # FHIR With Proxy
 
-This sample is a turnkey deployment of [FHIR Proxy](https://github.com/microsoft/fhir-proxy) with Azure Health Data Services (AHDS). I use this script to help me quickly deploy a FHIR Proxy and a FHIR Service in a AHDS workplace. This deployment doesn't require admin consent to operate.
+This sample is a turnkey deployment of [FHIR Proxy](https://github.com/microsoft/fhir-proxy) with Azure Health Data Services (AHDS) or API for FHIR. I use this script to help me quickly deploy a FHIR Proxy and a FHIR Service in a AHDS workplace. This deployment doesn't require admin consent to operate.
 
 This deployment contains
 - Azure Health Data Services
