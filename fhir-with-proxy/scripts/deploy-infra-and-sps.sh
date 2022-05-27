@@ -71,7 +71,7 @@ if [ -z ${PUBLIC_SP+x} ]; then
 
   # Give AAD a sec to breathe
   echo "Pausing to let AAD changes save..."
-  sleep 30s
+  sleep 15
 
   grantAppPermission "$FUNCTION_SP" "$PUBLIC_SP" "user_impersonation"
   addReplyUrl "$PUBLIC_SP" "https://oauth.pstmn.io/v1/callback"

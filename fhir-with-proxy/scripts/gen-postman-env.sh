@@ -80,7 +80,7 @@ echo "Creating Postman environment for FHIR Proxy..."
 
   PublicClientId=`getVaultSecret $VAULT_NAME "FP-SC-CLIENT-ID"`
   PublicClientSecret=`getVaultSecret $VAULT_NAME "FP-SC-SECRET"`
-  
+
   if [ -z "$FhirServerClientId" ] || [ -z "$FunctionAppClientId" ]; then
     echo $VAULT_NAME" does not appear to contain fhir proxy settings...Is the Proxy Installed?"
     exit 1
