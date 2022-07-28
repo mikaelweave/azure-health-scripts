@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FhirLoader.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "--path \"Z:\\source\\synthea\\output_100\\fhir\" --fhir \"https://pmoff2-fhir1.fhir.azurehealthcareapis.com\""
+    }
+  }
+}
