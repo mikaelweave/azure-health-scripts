@@ -41,9 +41,9 @@ module fhir './fhir.bicep'= if (fhirType == 'fhirService') {
     fhirName: fhirName
     location: location
     tenantId: tenantId
-    fhirContributorServicePrincipalObjectIds: [
+    fhirContributorServicePrincipalIds: [
       proxyFunction.outputs.functionAppPrincipalId
-      privateServicePrincipal.enterpriseObjectId
+      privateServicePrincipal.enterpriseId
     ]
     appTags: appTags
   }
@@ -60,9 +60,9 @@ module apiForfhir './apiForFhir.bicep'= if (fhirType == 'apiForFhir') {
     fhirName: apiForFhirName
     location: location
     tenantId: tenantId
-    fhirContributorServicePrincipalObjectIds: [
+    fhirContributorServicePrincipalIds: [
       proxyFunction.outputs.functionAppPrincipalId
-      privateServicePrincipal.enterpriseObjectId
+      privateServicePrincipal.enterpriseId
     ]
     appTags: appTags
   }
@@ -96,7 +96,7 @@ var secrets = {
   'FS-CLIENT-ID': privateServicePrincipal.appId
   'FS-SECRET': privateServicePrincipal.password
   'FS-CLIENT-SECRET': privateServicePrincipal.password
-  'FS-OBJECT-ID': privateServicePrincipal.objectId
+  'FS-OBJECT-ID': privateServicePrincipal.id
   'FS-RESOURCE': fhirUrl
   'FP-RBAC-TENANT-NAME': functionServicePrincipal.tenant
   'FP-RBAC-CLIENT-ID': functionServicePrincipal.appId

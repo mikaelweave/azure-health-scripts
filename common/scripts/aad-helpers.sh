@@ -7,23 +7,20 @@ function createServicePrincipal()
 {
     SP=`az ad sp create-for-rbac --name $1 --only-show-errors --output json`
     APP_ID=`echo $SP | jq -r '.appId'`
-    OBJECT_ID=`az ad app show --id $APP_ID --query "objectId" --out tsv`
-    ENTERPRISE_OBJECT_ID=`az ad sp show --id $APP_ID --query "objectId" --out tsv`
+    ID=`az ad app show --id $APP_ID --query "id" --out tsv`
+    ENTERPRISE_ID=`az ad sp show --id $APP_ID --query "id" --out tsv`
 
-    echo $SP | jq --arg objectId $OBJECT_ID '. + {objectId: $objectId}' | jq --arg objectId $ENTERPRISE_OBJECT_ID '. + {enterpriseObjectId: $objectId}'
+    echo $SP | jq --arg id $ID '. + {id: $id}' | jq --arg id $ENTERPRISE_ID '. + {enterpriseId: $id}'
 }
 
 
 # Grants specified app role on an AAD application to a specified principal
 # $1 JSON of App to add roles to
-# URL of JSON file with roles
-function createAppRolesFromWebJson()
+# Path of JSON file with roles
+function createAppRolesFromPathJson()
 {
     SP_APP_ID=`echo $1 | jq -r '.appId'`
-
-    mkdir -p "${REPO_DIR}/tmp" >/dev/null 2>&1
-    curl -L "$2" --output "${REPO_DIR}/tmp/fhirroles.json"
-    az ad app update --id $SP_APP_ID --app-roles @"${REPO_DIR}/tmp/fhirroles.json"
+    az ad app update --id $SP_APP_ID --app-roles @"$2"
 }
 
 
@@ -33,8 +30,8 @@ function checkAppRoleAssignment()
     APP_ROLE_ASSIGNMENTS=$(az rest --url "https://graph.microsoft.com/v1.0/servicePrincipals/$1/appRoleAssignedTo")
 
     echo `echo $APP_ROLE_ASSIGNMENTS | \
-        jq -r --arg APP_ROLE_ID "$3" --arg PUBLIC_SP_OBJECT_ID "$2" \
-            '.value[] | select(.appRoleId==$APP_ROLE_ID and .principalId==$PUBLIC_SP_OBJECT_ID)'` \
+        jq -r --arg APP_ROLE_ID "$3" --arg PUBLIC_SP_ID "$2" \
+            '.value[] | select(.appRoleId==$APP_ROLE_ID and .principalId==$PUBLIC_SP_ID)'` \
         | wc -c
 
     return
@@ -42,7 +39,7 @@ function checkAppRoleAssignment()
 
 
 # Grants specified app role on an AAD application to a specified principal
-# $1 ObjectId of the App access is being granted to
+# $1 Id of the App access is being granted to
 # $2 PrincipalID of the user, group, or service principal access is granted to
 # $3 App Role ID
 function grantAppRole()
@@ -55,7 +52,7 @@ function grantAppRole()
 
 
 # Grants specified app role on an AAD application to a specified principal
-# $1 ObjectId of the App access is being granted to
+# $1 Id of the App access is being granted to
 # $2 PrincipalID of the user, group, or service principal access is granted to
 # $3 App Role ID
 function grantAppRoleIfNeeded()
@@ -68,11 +65,11 @@ function grantAppRoleIfNeeded()
 }
 
 # Adds a reply URL to an App
-# $1 App Object
+# $1 App Id
 # $2 Reply URL
 function addReplyUrl()
 {
-    az ad app update --id `echo $1 | jq -r '.appId'` --reply-urls "$2"
+    az ad app update --id `echo $1 | jq -r '.appId'` --public-client-redirect-uris "$2"
 }
 
 
@@ -82,13 +79,12 @@ function addReplyUrl()
 # $3 - Permission name
 function grantAppPermission()
 {
-
-  SP_OBJECT_ID=`echo $1 | jq -r '.objectId'` 
-  PERMISSION_ID=`az rest --method get --uri "https://graph.microsoft.com/beta/applications/${SP_OBJECT_ID}" --query "api.oauth2PermissionScopes[?value=='$3'].id" --output tsv`
+  SP_ID=`echo $1 | jq -r '.id'` 
+  PERMISSION_ID=`az rest --method get --uri "https://graph.microsoft.com/beta/applications/${SP_ID}" --query "api.oauth2PermissionScopes[?value=='$3'].id" --output tsv`
 
   GIVEN_SP_APP_ID=`echo $2 | jq -r '.appId'`
 
-  az rest --method patch --uri "https://graph.microsoft.com/beta/applications/${SP_OBJECT_ID}" \
+  az rest --method patch --uri "https://graph.microsoft.com/beta/applications/${SP_ID}" \
       --headers '{"Content-Type":"application/json"}' \
       --body '{"api":{"preAuthorizedApplications":[{"appId":"'"$GIVEN_SP_APP_ID"'","permissionIds":["'"$PERMISSION_ID"'"]}]}}'
 }

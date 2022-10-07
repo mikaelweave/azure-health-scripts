@@ -1,0 +1,10 @@
+[
+    {
+      "adminConsentDescription": "user_impersonation",
+      "adminConsentDisplayName": "user_impersonation",
+      "id": "ae0ed854-64d0-4eb6-b625-0065500d5a23",
+      "isEnabled": true,
+      "type": "User",
+      "value": "user_impersonation"
+    }
+]

@@ -4,7 +4,7 @@ param appTags object = {}
 
 param tenantId string
 param location string
-param fhirContributorServicePrincipalObjectIds array = []
+param fhirContributorServicePrincipalIds array = []
 
 var fhirservicename = '${workspaceName}/${fhirName}'
 var loginURL = environment().authentication.loginEndpoint
@@ -49,7 +49,7 @@ resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@
   name: '5a1fc7df-4bf1-4951-a576-89034ee01acd'
 }
 
-resource fhirDataContributorAccess 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorServicePrincipalObjectIds: {
+resource fhirDataContributorAccess 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorServicePrincipalIds: {
   scope: fhir
   name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
   properties: {

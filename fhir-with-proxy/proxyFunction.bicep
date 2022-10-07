@@ -117,12 +117,12 @@ resource fhirProxyAppSettings 'Microsoft.Web/sites/config@2020-12-01' = {
   name: 'appsettings'
   parent: functionApp
   properties: {
-    'FUNCTIONS_EXTENSION_VERSION': '~3'
-    'FUNCTIONS_WORKER_RUNTIME': 'dotnet'
-    'AzureWebJobsStorage': 'DefaultEndpointsProtocol=https;AccountName=${funcStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${funcStorageAccount.listKeys().keys[0].value}'
+    FUNCTIONS_EXTENSION_VERSION: '~3'
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${funcStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${funcStorageAccount.listKeys().keys[0].value}'
     //'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING': 'DefaultEndpointsProtocol=https;AccountName=${funcStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${funcStorageAccount.listKeys().keys[0].value}'
-    'APPINSIGHTS_INSTRUMENTATIONKEY': appInsights.properties.InstrumentationKey
-    'APPLICATIONINSIGHTS_CONNECTION_STRING': 'InstrumentationKey=${appInsights.properties.InstrumentationKey}'
+    APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.InstrumentationKey
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${appInsights.properties.InstrumentationKey}'
     'FP-ADMIN-ROLE': 'Administrator'
     'FP-READER-ROLE': 'Reader'
     'FP-WRITER-ROLE': 'Writer'

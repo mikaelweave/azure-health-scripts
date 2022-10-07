@@ -39,7 +39,7 @@ fi
 GROUP_UNIQUE_STR=`az group show --name $RESOURCE_GROUP --query id --output tsv | md5sum | cut -c1-5`
 
 # Get executing user ID
-CURRENT_USER_OBJECT_ID=`az ad signed-in-user show --query 'objectId' --output tsv`
+CURRENT_USER_OBJECT_ID=`az ad signed-in-user show --query 'id' --output tsv`
 
 # Create the Private Service Principal if it's not set in our shell
 if [ -z ${PRIVATE_SP+x} ]; then
@@ -53,13 +53,14 @@ if [ -z ${FUNCTION_SP+x} ]; then
   echo "Creating or updating function service principal..."
   FUNCTION_APP_NAME="${PREFIX}-${GROUP_UNIQUE_STR}-func"
 
-
   FUNCTION_SP=`createServicePrincipal "$FUNCTION_APP_NAME"`
 
   addReplyUrl "$FUNCTION_SP" "https://${FUNCTION_APP_NAME}.azurewebsites.net/.auth/login/aad/callback"
-  createAppRolesFromWebJson "$FUNCTION_SP" 'https://raw.githubusercontent.com/microsoft/fhir-proxy/main/scripts/fhirroles.json'
+  createAppRolesFromPathJson "$FUNCTION_SP" "${REPO_DIR}/scripts/fhirroles.json"
 
   addDefaultIdentifierUri "$FUNCTION_SP" 
+
+  az ad app update --id `echo $1 | jq -r '.appId'` --set oauth2Permissions=@"${REPO_DIR}/scripts/oauth2-permissions.json"
 
   echo "FUNCTION_SP=$(echo $FUNCTION_SP | tr -d ' ')" >> "${REPO_DIR}/.env"
 fi
@@ -76,8 +77,8 @@ if [ -z ${PUBLIC_SP+x} ]; then
   grantAppPermission "$FUNCTION_SP" "$PUBLIC_SP" "user_impersonation"
   addReplyUrl "$PUBLIC_SP" "https://oauth.pstmn.io/v1/callback"
 
-  FUNCTION_SP_OBJECT_ID=`echo $FUNCTION_SP | jq -r '.enterpriseObjectId'`
-  PUBLIC_SP_OBJECT_ID=`echo $PUBLIC_SP | jq -r '.enterpriseObjectId'`
+  FUNCTION_SP_OBJECT_ID=`echo $FUNCTION_SP | jq -r '.enterpriseId'`
+  PUBLIC_SP_OBJECT_ID=`echo $PUBLIC_SP | jq -r '.enterpriseId'`
   FHIR_WRITER_ROLE='2d1c681b-71e0-4f12-9040-d0f42884be86'
   FHIR_READER_ROLE='24c50db1-1e11-4273-b6a0-b697f734bcb4'
 

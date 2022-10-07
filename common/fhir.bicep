@@ -4,8 +4,8 @@ param appTags object = {}
 
 param tenantId string
 param location string
-param fhirContributorSpObjectIds array = []
-param fhirContributorUserObjectIds array = []
+param fhirContributorSpIds array = []
+param fhirContributorUserIds array = []
 
 var fhirservicename = '${workspaceName}/${fhirName}'
 var loginURL = environment().authentication.loginEndpoint
@@ -50,7 +50,7 @@ resource fhirContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@
   name: '5a1fc7df-4bf1-4951-a576-89034ee01acd'
 }
 
-resource fhirDataContributorAccessSp 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorSpObjectIds: {
+resource fhirDataContributorAccessSp 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorSpIds: {
   scope: fhir
   name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
   properties: {
@@ -60,7 +60,7 @@ resource fhirDataContributorAccessSp 'Microsoft.Authorization/roleAssignments@20
   }
 }]
 
-resource fhirDataContributorAccessUser 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorUserObjectIds: {
+resource fhirDataContributorAccessUser 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' =  [for principalId in  fhirContributorUserIds: {
   scope: fhir
   name: guid(fhir.id, principalId, fhirContributorRoleDefinition.id)
   properties: {
