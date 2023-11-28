@@ -12,7 +12,7 @@ using Azure.Storage.Blobs.Models;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 
-string connectionString = "DefaultEndpointsProtocol=https;AccountName=***REMOVED***;AccountKey=***REMOVED***;EndpointSuffix=core.windows.net";
+string connectionString = "";
 string containerName = "import1";
 int maxBlobsToImport = 10000;
 BlobContainerClient container = new BlobContainerClient(connectionString, containerName);
