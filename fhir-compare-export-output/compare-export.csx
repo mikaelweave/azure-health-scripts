@@ -22,7 +22,7 @@ public class ExportData
     public List<OutputItem> Output { get; set; }
 }
 
-string[] fileNames = { "export1.json", "export2.json" };
+string[] fileNames = { "export1.json" };
 
 
 foreach (string fileName in fileNames)
@@ -42,11 +42,11 @@ foreach (string fileName in fileNames)
             string resourceType = item.Type;
             int count = item.Count;
 
-            totalCount += count;
+            totalCount = totalCount + count;
 
             if (countByResourceType.ContainsKey(resourceType))
             {
-                countByResourceType[resourceType] += count;
+                countByResourceType[resourceType] = countByResourceType[resourceType] + count;
             }
             else
             {
