@@ -13,8 +13,9 @@ using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 
 string connectionString = "";
-string containerName = "import1";
-int maxBlobsToImport = 10000;
+string containerName = "";
+int blobToSkip = 0;
+int maxBlobsToImport = 1000;
 BlobContainerClient container = new BlobContainerClient(connectionString, containerName);
 
 Console.WriteLine($"Fetching blobs from {container.Uri.AbsoluteUri}");
@@ -22,7 +23,9 @@ Console.WriteLine($"Fetching blobs from {container.Uri.AbsoluteUri}");
 List<List<Parameters.ParameterComponent>> importItems = new();
 await foreach (var blobItem in container.GetBlobsAsync())
 {
+    if (blobToSkip-- > 0) continue;
     if (importItems.Count >= maxBlobsToImport) break;
+
     importItems.Add(new(){
                 new() { Name = "type", Value = new FhirString(blobItem.Name.Split('/').Last().Split('.').First()) },
                 new() { Name = "url", Value = new FhirString($"{container.Uri.AbsoluteUri}/{blobItem.Name}") },
